@@ -1,4 +1,4 @@
-# Nico's learning Firebase and refreshinf his React chops
+# Nico's learning Firebase and refreshing his React chops
 
 https://www.robinwieruch.de/complete-firebase-authentication-react-tutorial/#react-router-for-firebase-auth
 

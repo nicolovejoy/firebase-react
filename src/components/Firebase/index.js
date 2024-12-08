@@ -1,4 +1,5 @@
 import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
 import React from "react";
 
 const firebaseConfig = {
@@ -12,7 +13,20 @@ const firebaseConfig = {
 
 const FirebaseContext = React.createContext(null);
 
+// initialize Firebase
 const app = initializeApp(firebaseConfig);
+// Initialize Firebase Authentication and get a reference to the service
+const auth = getAuth(app);
+const doCreateUserWithEmailAndPassword = (email, password) =>
+  auth.createUserWithEmailAndPassword(email, password);
+
+const doSignInWithEmailAndPassword = (email, password) =>
+  auth.signInWithEmailAndPassword(email, password);
+const doSignOut = () => auth.signOut();
+const doPasswordReset = (email) => auth.sendPasswordResetEmail(email);
+
+const doPasswordUpdate = (password) =>
+  auth.currentUser.updatePassword(password);
 
 const FirebaseProvider = ({ children }) => {
   if (app && app.apps && !app.apps.length) {
