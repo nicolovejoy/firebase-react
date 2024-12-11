@@ -1,4 +1,5 @@
 import { app, FirebaseContext } from "./components/Firebase";
+import GetAuth from "./GetAuth";
 
 const FirebaseProvider = ({ children }) => {
   if (!app.apps.length) {

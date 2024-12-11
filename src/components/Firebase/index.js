@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-// import { getAuth } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 import React from "react";
 
 const firebaseConfig = {
@@ -32,7 +32,10 @@ const app = initializeApp(firebaseConfig);
 const FirebaseProvider = ({ children }) => {
   if (app && app.apps && !app.apps.length) {
     app.initializeApp(firebaseConfig);
+    // TODO: Likely need to fix this down the road for authorization auth to work right
+    const auth = getAuth(app);
   }
+  // const user = auth.currentUser;
   return (
     <FirebaseContext.Provider value={app}>{children}</FirebaseContext.Provider>
   );
