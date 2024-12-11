@@ -1,44 +1,37 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+// import { getAuth } from "firebase/auth";
 import React from "react";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
   authDomain: process.env.REACT_APP_AUTH_DOMAIN,
   databaseURL: process.env.REACT_APP_DATABASE_URL,
-  projectId: process.env.REACT_APP_PROJECT_ID,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
   storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
   messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_ID,
 };
 
 const FirebaseContext = React.createContext(null);
 
-// initialize Firebase
+// // initialize Firebase
 const app = initializeApp(firebaseConfig);
-// Initialize Firebase Authentication and get a reference to the service
-const auth = getAuth(app);
-const doCreateUserWithEmailAndPassword = (email, password) =>
-  auth.createUserWithEmailAndPassword(email, password);
+// // Initialize Firebase Authentication and get a reference to the service
+// const auth = getAuth(app);
+// const doCreateUserWithEmailAndPassword = (email, password) =>
+//   auth.createUserWithEmailAndPassword(email, password);
 
-const doSignInWithEmailAndPassword = (email, password) =>
-  auth.signInWithEmailAndPassword(email, password);
-const doSignOut = () => auth.signOut();
-const doPasswordReset = (email) => auth.sendPasswordResetEmail(email);
+// const doSignInWithEmailAndPassword = (email, password) =>
+//   auth.signInWithEmailAndPassword(email, password);
+// const doSignOut = () => auth.signOut();
+// const doPasswordReset = (email) => auth.sendPasswordResetEmail(email);
 
-const doPasswordUpdate = (password) =>
-  auth.currentUser.updatePassword(password);
+// const doPasswordUpdate = (password) =>
+//   auth.currentUser.updatePassword(password);
 
 const FirebaseProvider = ({ children }) => {
   if (app && app.apps && !app.apps.length) {
-    app.initializeApp({
-      apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-      authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-      databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
-      projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-      storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-      messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-      appId: process.env.REACT_APP_FIREBASE_APP_ID,
-    });
+    app.initializeApp(firebaseConfig);
   }
   return (
     <FirebaseContext.Provider value={app}>{children}</FirebaseContext.Provider>
