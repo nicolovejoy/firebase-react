@@ -1,22 +1,13 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import React from "react";
-
-const firebaseConfig = {
-  apiKey: process.env.REACT_APP_API_KEY,
-  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
-  databaseURL: process.env.REACT_APP_DATABASE_URL,
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
-  appId: process.env.REACT_APP_ID,
-};
+import { firebaseConfig } from "../../constants/firebaseConfig";
+import { AuthProvider } from "./AuthComponent";
 
 const FirebaseContext = React.createContext(null);
 
 // // initialize Firebase
 const app = initializeApp(firebaseConfig);
-// // Initialize Firebase Authentication and get a reference to the service
 // const auth = getAuth(app);
 // const doCreateUserWithEmailAndPassword = (email, password) =>
 //   auth.createUserWithEmailAndPassword(email, password);
@@ -31,9 +22,12 @@ const app = initializeApp(firebaseConfig);
 
 const FirebaseProvider = ({ children }) => {
   if (app && app.apps && !app.apps.length) {
-    app.initializeApp(firebaseConfig);
+    // app.initializeApp(firebaseConfig);
+
     // TODO: Likely need to fix this down the road for authorization auth to work right
+    // Initialize Firebase Authentication and get a reference to the service
     const auth = getAuth(app);
+    console.log(auth);
   }
   // const user = auth.currentUser;
   return (
