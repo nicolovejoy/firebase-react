@@ -1,4 +1,6 @@
-# Getting Started with Create React App
+# Nico's learning Firebase and refreshing his React chops
+
+https://www.robinwieruch.de/complete-firebase-authentication-react-tutorial/#react-router-for-firebase-auth
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
