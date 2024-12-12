@@ -1,14 +1,20 @@
+import React, { useState, useEffect, createContext, useContext } from "react";
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import React from "react";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
+
 import { firebaseConfig } from "../../constants/firebaseConfig";
-import { AuthProvider } from "./AuthComponent";
 
 const FirebaseContext = React.createContext(null);
 
 // // initialize Firebase
 const app = initializeApp(firebaseConfig);
-// const auth = getAuth(app);
+const auth = getAuth(app);
 // const doCreateUserWithEmailAndPassword = (email, password) =>
 //   auth.createUserWithEmailAndPassword(email, password);
 
@@ -21,18 +27,53 @@ const app = initializeApp(firebaseConfig);
 //   auth.currentUser.updatePassword(password);
 
 const FirebaseProvider = ({ children }) => {
-  if (app && app.apps && !app.apps.length) {
-    // app.initializeApp(firebaseConfig);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    // TODO: Likely need to fix this down the road for authorization auth to work right
-    // Initialize Firebase Authentication and get a reference to the service
-    const auth = getAuth(app);
-    console.log(auth);
-  }
-  // const user = auth.currentUser;
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      setLoading(false);
+    });
+
+    return unsubscribe;
+  }, []);
+
+  const signIn = async (email, password) => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const signUp = async (email, password) => {
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const signOutUser = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const value = { user, loading, signIn, signUp, signOut: signOutUser };
   return (
-    <FirebaseContext.Provider value={app}>{children}</FirebaseContext.Provider>
+    <FirebaseContext.Provider value={value}>
+      {children}
+    </FirebaseContext.Provider>
   );
 };
 
-export { FirebaseProvider };
+// useFirebaseAuth hook
+const useFirebaseAuth = () => {
+  return useContext(FirebaseContext);
+};
+
+export { FirebaseProvider, useFirebaseAuth };

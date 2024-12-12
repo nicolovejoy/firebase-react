@@ -59,10 +59,10 @@ export const AuthProvider = ({ children }) => {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-// useAuth hook
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
+// // useAuth hook
+// export const useAuth = () => {
+//   return useContext(AuthContext);
+// };
 
 // Example usage in a component
 const MyComponent = () => {
