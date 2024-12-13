@@ -1,29 +1,70 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import React from "react";
+import {
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut,
+  getAuth,
+} from "firebase/auth";
+import { createContext, useEffect, useState } from "react";
+import PropTypes from "prop-types";
+
 import { firebaseConfig } from "../../constants/firebaseConfig";
 
-const FirebaseContext = React.createContext(null);
+const FirebaseContext = createContext(null);
 
 // initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-// // Initialize Firebase Authentication and get a reference to the service
-// const doCreateUserWithEmailAndPassword = (email, password) =>
-//   auth.createUserWithEmailAndPassword(email, password);
 
-// const doSignInWithEmailAndPassword = (email, password) =>
-//   auth.signInWithEmailAndPassword(email, password);
-// const doSignOut = () => auth.signOut();
-// const doPasswordReset = (email) => auth.sendPasswordResetEmail(email);
-
-// const doPasswordUpdate = (password) =>
-//   auth.currentUser.updatePassword(password);
-
+// create a Provider (called AuthProvider on the site I used to snarf this code, namely https://dev.to/jps27cse/building-a-firebase-authentication-and-private-route-system-in-a-react-app-5203)
 const FirebaseProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const createUser = (email, password) => {
+    setLoading(true);
+    return createUserWithEmailAndPassword(auth, email, password);
+  };
+
+  const loginUser = (email, password) => {
+    setLoading(true);
+    return signInWithEmailAndPassword(auth, email, password);
+  };
+
+  const logOut = () => {
+    setLoading(true);
+    return signOut(auth);
+  };
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  const authValue = {
+    createUser,
+    user,
+    loginUser,
+    logOut,
+    loading,
+  };
+
   return (
-    <FirebaseContext.Provider value={app}>{children}</FirebaseContext.Provider>
+    <FirebaseContext.Provider value={authValue}>
+      {children}
+    </FirebaseContext.Provider>
   );
+};
+
+FirebaseProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export { FirebaseProvider };
